@@ -36,7 +36,6 @@ const schema = yup.object({
     .required('Gender is required')
     .oneOf(['male', 'female'])
     .nullable(),
-
 })
 
 function AddContact({ addContact }) {
@@ -59,7 +58,7 @@ function AddContact({ addContact }) {
         profession: '',
         bio: '',
         image: '',
-        image: 'male',
+        gender: 'male',
       })
   },[isSubmitSuccessful]);
   const [birthYear, setBirthYear] = useState(new Date()); 
@@ -91,8 +90,8 @@ function AddContact({ addContact }) {
                 placeholder='Enter Your First Name'
               />
               <Form.Control.Feedback type='invalid' className='d-block'>
-              {errors?.firstName?.message}
-            </Form.Control.Feedback> 
+                {errors?.firstName?.message}
+              </Form.Control.Feedback> 
             </Col>
           </Form.Group>
 
@@ -112,8 +111,8 @@ function AddContact({ addContact }) {
                 placeholder='Enter Your Last Name'
               />
               <Form.Control.Feedback type='invalid' className='d-block'>
-              {errors?.lastName?.message}
-            </Form.Control.Feedback> 
+                {errors?.lastName?.message}
+              </Form.Control.Feedback> 
             </Col>
           </Form.Group>
 
@@ -239,6 +238,7 @@ function AddContact({ addContact }) {
             </Col>
             <Col sm={9}>
               <Form.Control
+                as='textarea'
                 type='text'
                 defaultValue=''
                 id='bio'
