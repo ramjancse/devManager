@@ -1,9 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import React, { useEffect, useState } from 'react';
-import { Button, Col, Form, Row } from 'react-bootstrap';
+import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import DatePicker from "react-datepicker";
 import { useForm } from "react-hook-form";
 import * as yup from 'yup';
+import Header from '../layouts/Header';
 
 const schema = yup.object({
   firstName: yup
@@ -71,7 +72,9 @@ function AddContact({ addContact }) {
   }
      
     return (
-        <>
+      <>
+        <Header />
+        <Container className='marginY'>
         <h2 className='text-center'>Add Contact</h2>
         <Form onSubmit={handleSubmit(onsubmit)}>
           <Form.Group as={Row} className='mb-3'>
@@ -251,14 +254,12 @@ function AddContact({ addContact }) {
             </Form.Control.Feedback> 
             </Col>
           </Form.Group>
-
-          
-          
-          
           <Button variant='primary' size='md' type='submit' disabled={ isSubmitting? 'disabled' :''}>
             Add Contact
           </Button>
         </Form>
+        </Container>
+        
       </>
   )
 }

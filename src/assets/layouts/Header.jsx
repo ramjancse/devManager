@@ -1,8 +1,11 @@
-import React from 'react'
-import { Button, Container, Form, Nav, Navbar } from 'react-bootstrap'
+import React from 'react';
+import { Button, Container, Form, Nav, Navbar } from 'react-bootstrap';
+import { NavLink } from "react-router-dom";
 function Header() {
   return (
-    <Navbar bg='light' expand='lg'>
+   
+    
+      <Navbar bg='light' expand='lg'>
     <Container>
       <Navbar.Brand href='#' className='brand'>
         Dev Manager
@@ -13,12 +16,14 @@ function Header() {
           className='me-auto my-2 my-lg-0'
           style={{ maxHeight: '100px' }}
           navbarScroll
-        >
-          <Nav.Link href='#action1'>Contacts</Nav.Link>
-          <Nav.Link href='#action2'>Register</Nav.Link>
-          <Nav.Link href='#' disabled>
-            Login
-          </Nav.Link>
+              >
+         
+          <NavLink to='/home' className="nav-link">Home</NavLink>
+          <NavLink to='/about' className="nav-link">About</NavLink>
+          <NavLink to='/contact' className="nav-link">Contacts</NavLink>
+          <NavLink to='/addcontact' className="nav-link">Add Contacts</NavLink>
+          <NavLink to='#action2' className="nav-link">Register</NavLink>
+          <NavLink to='#' className="nav-link">Login </NavLink>
         </Nav>
         <Form className='d-flex'>
           <Form.Control
@@ -31,7 +36,7 @@ function Header() {
         </Form>
       </Navbar.Collapse>
     </Container>
-  </Navbar>
+    </Navbar>
   )
 }
 
