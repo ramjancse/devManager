@@ -20,10 +20,10 @@ function Header() {
          
           <NavLink to='/home' className="nav-link">Home</NavLink>
           <NavLink to='/about' className="nav-link">About</NavLink>
-          <NavLink to='/contact' className="nav-link">Contacts</NavLink>
+          <NavLink to='/contacts' className="nav-link">Contacts</NavLink>
           <NavLink to='/addcontact' className="nav-link">Add Contacts</NavLink>
-          <NavLink to='#action2' className="nav-link">Register</NavLink>
-          <NavLink to='#' className="nav-link">Login </NavLink>
+          <NavLink to='/register' className="nav-link">Register</NavLink>
+          <NavLink to='/login' className="nav-link">Login </NavLink>
         </Nav>
         <Form className='d-flex'>
           <Form.Control

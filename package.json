@@ -11,6 +11,8 @@
   "dependencies": {
     "@hookform/resolvers": "^2.9.7",
     "bootstrap": "^5.2.0",
+    "date-fns": "^2.29.1",
+    "mdb-react-ui-kit": "^4.1.0",
     "npm": "^8.17.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.5.0",
@@ -19,6 +21,7 @@
     "react-hook-form": "^7.34.0",
     "react-icons": "^4.4.0",
     "react-router-dom": "6",
+    "react-toastify": "^9.0.8",
     "uuid": "^8.3.2",
     "yup": "^0.32.11"
   },

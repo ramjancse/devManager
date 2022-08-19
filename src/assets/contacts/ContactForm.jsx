@@ -3,8 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import DatePicker from "react-datepicker";
 import { useForm } from "react-hook-form";
+import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
 import * as yup from 'yup';
-import Header from '../layouts/Header';
+
 
 const schema = yup.object({
   firstName: yup
@@ -22,6 +24,7 @@ const schema = yup.object({
   profession: yup
     .string()
     .required('profession is required')
+    .oneOf(['developer','designer','marketer'])
     .min(3, 'Min Length must be greater than 3 Character'),
   bio: yup
     .string()
@@ -39,8 +42,8 @@ const schema = yup.object({
     .nullable(),
 })
 
-function AddContact({ addContact }) {
-  
+function ContactForm({ addContact, updateContact, contact }) {
+ 
   const {
     register,
     handleSubmit,
@@ -49,33 +52,70 @@ function AddContact({ addContact }) {
     reset,
     formState: { errors, isSubmitting,isSubmitted, isSubmitSuccessful } } = useForm({
     resolver: yupResolver(schema)
-  });
+    });
+  const navigate = useNavigate();
+  const defaultValue = {
+    firstName: contact?.firstName || 'Ramjan',
+    lastName: contact?.lastName || 'Ali',
+    email: contact?.email || 'ramjan2k21@gmail.com',
+    gender: contact?.gender || 'male',
+    profession: contact?.profession || 'developer',
+    bio: contact?.bio || 'I beleive in quality',
+    image: contact?.image || 'https://randomuser.me/api/portraits/women/75.jpg',
+    dateOfBirth: contact?.dateOfBirth || new Date(),
+  }
   
-  useEffect( () => {
-    reset({
-        firstName: '',
-        lastName: '',
-        email: '',
-        profession: '',
-        bio: '',
-        image: '',
-        gender: 'male',
-      })
-  },[isSubmitSuccessful]);
+  const { firstName, lastName, email, gender, profession, bio, image } = defaultValue
+  
+  // useEffect( () => {
+  //   reset({
+  //       firstName: '',
+  //       lastName: '',
+  //       email: '',
+  //       profession: '',
+  //       bio: '',
+  //       image: '',
+  //       gender: '',
+  //     })
+  // }, [isSubmitSuccessful]);
+  
   const [birthYear, setBirthYear] = useState(new Date()); 
+  
   useEffect(() => {
     setValue('dateOfBirth', birthYear)
   },[birthYear]);
   
   const onsubmit = (data) => {
-    console.log(data);
+    
+    const id = contact?.id;
+    if (id) {
+      updateContact(data, id);
+     
+      toast.success('contact is updated successfully');
+    } else {
+      addContact(data);
+      toast.success('contact is added successfully');
+    }
+    navigate('/contacts');
+  
   }
      
     return (
       <>
-        <Header />
+        <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+     
         <Container className='marginY'>
-        <h2 className='text-center'>Add Contact</h2>
+          <h2 className='text-center'> { contact?.id? 'Edit Contact': 'Add Contact'} </h2>
         <Form onSubmit={handleSubmit(onsubmit)}>
           <Form.Group as={Row} className='mb-3'>
             <Col sm={3}>
@@ -86,7 +126,7 @@ function AddContact({ addContact }) {
             <Col sm={9}>
               <Form.Control
                 type='text'
-                defaultValue=''
+                defaultValue={ firstName}
                 id='firstName'
                 {...register('firstName')}
                 isInvalid={ errors?.firstName}
@@ -107,7 +147,7 @@ function AddContact({ addContact }) {
             <Col sm={9}>
               <Form.Control
                 type='text'
-                defaultValue=''
+                defaultValue={ lastName}
                 id='lastName'
                 {...register('lastName')}
                 isInvalid={ errors?.lastName}
@@ -128,7 +168,7 @@ function AddContact({ addContact }) {
             <Col sm={9}>
               <Form.Control
                 type='text'
-                defaultValue=''
+                defaultValue={ email}
                 id='email'
                 {...register('email')}
                 isInvalid={ errors?.email}
@@ -146,15 +186,18 @@ function AddContact({ addContact }) {
               Profession
               </Form.Label>
             </Col>
-            <Col sm={9}>
-              <Form.Control
-                type='text'
-                defaultValue=''
-                id='profession'
-                {...register('profession')}
-                isInvalid={ errors?.profession}
-                placeholder='Enter Your Profession'
-              />
+              <Col sm={9}>
+                <Form.Select
+                  {...register('profession')}
+                  id="profession"
+                  defaultValue={ profession}
+                  isInvalid={ errors?.profession}
+                  aria-label="Select Your Profession">
+                <option value='' disabled>Select Your Profession</option>
+                <option value="developer">Developer</option>
+                <option value="designer">Designer</option>
+                <option value="marketer">Marketer</option>
+              </Form.Select>
               <Form.Control.Feedback type='invalid' className='d-block'>
               {errors?.profession?.message}
             </Form.Control.Feedback> 
@@ -172,6 +215,8 @@ function AddContact({ addContact }) {
                 type='radio'
                 label='Male'
                 value='male'
+                  defaultChecked={ gender === 'male'}
+               
                 {...register('gender')}
                
               />
@@ -185,6 +230,7 @@ function AddContact({ addContact }) {
                 type='radio'
                 label='Female'
                 value='female'
+                defaultChecked={ gender === 'female'}
                 {...register('gender')}
               />
             </Col>
@@ -199,7 +245,7 @@ function AddContact({ addContact }) {
             <Col sm={9}>
               <Form.Control
                 type='text'
-                defaultValue=''
+                defaultValue={ image}
                 id='image'
                 {...register('image')}
                 isInvalid={ errors?.image}
@@ -243,7 +289,7 @@ function AddContact({ addContact }) {
               <Form.Control
                 as='textarea'
                 type='text'
-                defaultValue=''
+                defaultValue={ bio}
                 id='bio'
                 {...register('bio')}
                 isInvalid={ errors?.bio}
@@ -255,7 +301,7 @@ function AddContact({ addContact }) {
             </Col>
           </Form.Group>
           <Button variant='primary' size='md' type='submit' disabled={ isSubmitting? 'disabled' :''}>
-            Add Contact
+          { contact?.id? 'Update Contact': 'Add Contact'}
           </Button>
         </Form>
         </Container>
@@ -264,4 +310,4 @@ function AddContact({ addContact }) {
   )
 }
 
-export default AddContact
+export default ContactForm

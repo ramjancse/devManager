@@ -1,22 +1,30 @@
+import format from "date-fns/format";
 import React from 'react';
 import { Button, Card, ListGroup } from 'react-bootstrap';
-import { FaEye, FaRegTrashAlt } from 'react-icons/fa';
-
+import { FaEye, FaPencilAlt, FaRegTrashAlt } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { toast } from "react-toastify";
 function Contact({contact, deleteContact}) {
-    const {
-        id,
-        firstName,
-        lastName,
-        email,
-        profession,
-        bio,
-        image,
-        gender,
-        dateOfBirth,
-      } = contact
+  const {
+    id,
+    firstName,
+    lastName,
+    email,
+    profession,
+    bio,
+    image,
+    gender,
+    dateOfBirth,
+  } = contact;
+
+  const handleDelete = (id) => {
+    toast.success('Your data deleted suscessfully');
+    deleteContact(id)
+  }
+  
     return (
       <>
-          <Card className='mb-3'>
+      <Card className='mb-3'>
       <div className='d-flex'>
         <Card.Img className='card-img' src={image} />
         <Card.Body>
@@ -32,19 +40,26 @@ function Contact({contact, deleteContact}) {
           <ListGroup className='list-group-flush'>
             <ListGroup.Item>Gender: {gender}</ListGroup.Item>
             <ListGroup.Item> Email: {email}</ListGroup.Item>
-            <ListGroup.Item>Date of Birth: {dateOfBirth}</ListGroup.Item>
+            <ListGroup.Item>Date of Birth: {dateOfBirth instanceof Object? format(dateOfBirth, "dd/MM/yyyy") : dateOfBirth }</ListGroup.Item>
           </ListGroup>
           <div className='card-btn mt-3'>
-            <Card.Link>
+            <Card.Link as={Link} to={ `/contacts/${id}`}>
               <Button variant='warning ms-3' size='md' type='view'>
-                <FaEye />
+                    <FaEye />
               </Button>
-            </Card.Link>
+                </Card.Link>
+                
+              <Card.Link as={Link} to={ `/edit-contact/${id}`}>
+                <Button variant='warning ms-3' size='md' type='view'>
+                      <FaPencilAlt />
+                </Button>
+              </Card.Link>
+            
             <Card.Link>
               <Button
                 variant='danger ms-3'
                 size='md'
-                onClick={() => deleteContact(id)}
+                onClick={() => handleDelete(id)}
               >
                 <FaRegTrashAlt />
               </Button>
