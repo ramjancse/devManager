@@ -1,13 +1,13 @@
 import React from 'react';
 import { Button, Container, Form, Nav, Navbar } from 'react-bootstrap';
 import { NavLink } from "react-router-dom";
-function Header() {
+function Header({toggleTheme, theme}) {
   return (
    
     
-    <Navbar bg='light' expand='lg'>
+    <Navbar id={theme} >
     <Container>
-      <Navbar.Brand href='#' className='brand'>
+      <Navbar.Brand href='/' className='brand'>
         Dev Manager
       </Navbar.Brand>
       <Navbar.Toggle aria-controls='navbarScroll' />
@@ -18,7 +18,7 @@ function Header() {
           navbarScroll
               >
          
-          <NavLink to='/home' className="nav-link">Home</NavLink>
+          <NavLink to='/home' className="nav-link"> Home</NavLink>
           <NavLink to='/about' className="nav-link">About</NavLink>
           <NavLink to='/contacts' className="nav-link">Contacts</NavLink>
           <NavLink to='/addcontact' className="nav-link">Add Contacts</NavLink>
@@ -34,7 +34,9 @@ function Header() {
           />
           <Button variant='outline-success'>Search</Button>
         </Form>
-      </Navbar.Collapse>
+        </Navbar.Collapse>
+       
+      
     </Container>
     </Navbar>
   )

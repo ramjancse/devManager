@@ -36,6 +36,31 @@
   margin-top: 2rem;
   margin-bottom: 2rem;
 }
-.footerbgcolor : {
+.footerbgcolor {
   background-color: #fff;
+}
+#light {
+  background-color: #eee8e4;
+}
+
+#dark {
+  background-color: #121212;
+  color: #fff;
+}
+#dark .brand {
+  color: #fff;
+}
+#dark .nav-link {
+  color: #fff;
+}
+.marginSwitch {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.mainContent {
+  width: 100vw;
+  height: 100vh;
+}
+.textJustify {
+  text-align: justify;
 }

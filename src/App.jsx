@@ -1,6 +1,7 @@
 
-import { useState } from 'react';
+import { createContext, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
+import ReactSwitch from 'react-switch';
 import { ToastContainer } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
 import './App.css';
@@ -13,6 +14,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 import Register from './pages/Register';
+
+export const ThemeContext = createContext(null);
 
 const initialContacts = [
   {
@@ -98,7 +101,8 @@ const initialContacts = [
 
 function App() {
   const [contacts, setContacts] = useState(initialContacts)
-  
+  const [theme, setTheme] = useState('dark');
+
   const updateContact = (contactToUpdate, id) => {
     const contactWithUpdate = contacts.map((contact) => {
       if (contact.id === id) {
@@ -124,40 +128,45 @@ function App() {
     }
     setContacts([contactToAdd, ...contacts]);
   }
+  const toggleTheme = () => {
+    setTheme((curr) => (curr === 'light'? 'dark': 'light') )
+  }
 
   return (
     <>
-      
-      {/* <Header /> */}
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-      <Routes>
-        <Route path='/' element={ <Home />} />
-        <Route path='/home' element={ <Home />} />
-        <Route path='/about' element={ <About />} />
-        <Route path='/contacts' element={ <Contacts contacts={ contacts} deleteContact={deleteContact}/> } />
-        <Route path='/addcontact' element={<AddContact addContact={ addContact} />} />
-        <Route path='/edit-contact/:id' element={<EditContact contacts={contacts} updateContact={updateContact} />} />
-        <Route path='/contacts/:id' element={<ContactDetails contacts={contacts} deleteContact={deleteContact}/>} />
-        <Route path='/register' element={ <Register/>} />
-        <Route path='/login' element={ <Login/>} />
-        <Route path='*' element={ <NotFound/>} />
-      </Routes>
-        {/* <AddContact addContact={ addContact} />
-        <Contacts contacts={contacts} deleteContact={ deleteContact}  /> */}
-    
-      </>
-     
-   
+      <ThemeContext.Provider value={{theme, toggleTheme}}>
+        <div id={theme} >
+         
+          <ReactSwitch onChange={toggleTheme} checked={theme == 'light'} className='marginSwitch' />
+         
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+          />
+          <Routes>
+            <Route path='/' element={ <Home />} />
+            <Route path='/home' element={ <Home />} />
+            <Route path='/about' element={ <About />} />
+            <Route path='/contacts' element={ <Contacts contacts={ contacts} deleteContact={deleteContact}/> } />
+            <Route path='/addcontact' element={<AddContact addContact={ addContact} />} />
+            <Route path='/edit-contact/:id' element={<EditContact contacts={contacts} updateContact={updateContact} />} />
+            <Route path='/contacts/:id' element={<ContactDetails contacts={contacts} deleteContact={deleteContact}/>} />
+            <Route path='/register' element={ <Register/>} />
+            <Route path='/login' element={ <Login/>} />
+            <Route path='*' element={ <NotFound/>} />
+          </Routes>
+         
+         
+        </div>
+      </ThemeContext.Provider>
+    </>
   )
 }
 

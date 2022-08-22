@@ -6,7 +6,7 @@ function Login() {
   return (
       <>
           <Header />
-          <Container className='marginY'>
+          <Container className='marginY mainContent'>
             <h1 className='text-center'> Login </h1>
       </Container>
       <Footer/>
