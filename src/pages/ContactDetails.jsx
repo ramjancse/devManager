@@ -1,17 +1,27 @@
 import format from "date-fns/format";
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, Card, Container, ListGroup } from 'react-bootstrap';
 import { FaEye, FaPencilAlt, FaRegTrashAlt } from 'react-icons/fa';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from "react-toastify";
+import { AuthContext } from "../context/Auth.Context";
+import { ContactContext } from "../context/Contact.context";
 import Footer from "../layouts/Footer";
 import Header from "../layouts/Header";
 
-function ContactDetails({ contacts,deleteContact }) {
-    const [contact, setContact ] = useState({});
+function ContactDetails() {
+    const { contacts,deleteContact} = useContext(ContactContext);
+    const {user} = useContext(AuthContext);
+    const [contact, setContact] = useState({});
     const { id } = useParams();
-    const foundContact = contacts.find((contact) => contact.id == id)
+    const foundContact = contacts.find((contact) => contact.id === +id);
+    
+    
+    
     const navigate = useNavigate()
+    const isOwner = user.id === foundContact.author.data.id;
+  
+
     const handleDelete = (id)=>{
        
         deleteContact(id)
@@ -25,6 +35,8 @@ function ContactDetails({ contacts,deleteContact }) {
             setContact(foundContact);
         }
     }, [id]);
+
+    
     
     return (
         <>
@@ -50,27 +62,44 @@ function ContactDetails({ contacts,deleteContact }) {
                         <ListGroup.Item> Email: {email}</ListGroup.Item>
                         <ListGroup.Item>Date of Birth: {dateOfBirth instanceof Object? format(dateOfBirth, "dd/MM/yyyy") : dateOfBirth }</ListGroup.Item>
                     </ListGroup>
-                    <div className='card-btn mt-3'>
-                        <Card.Link as={ Link } to={`/edit-contact/${id}`}>
-                            <Button variant='warning ms-3' size='md' type='view'>
-                                    <FaEye />   
-                            </Button>
-                                    </Card.Link>
-                                    <Card.Link as={ Link } to={`/edit-contact/${id}`}>
-                            <Button variant='warning ms-3' size='md' type='view'>
-                                    <FaPencilAlt />   
-                            </Button>
-                        </Card.Link>
-                        <Card.Link>
-                        <Button
-                            variant='danger ms-3'
-                            size='md'
-                            onClick={() => handleDelete(id)}
-                        >
-                            <FaRegTrashAlt />
+                    { !isOwner &&
+                        <Card.Link as={Link} to={`/contacts`}>
+                        <Button variant='warning ms-3' size='md' type='view'>
+                             Back
                         </Button>
-                        </Card.Link>
-                        </div>
+                        </Card.Link>           
+                    }
+                               
+                    {
+                        isOwner && 
+                            <div className='card-btn mt-3'>
+                                <Card.Link as={ Link } to={`/edit-contact/${id}`}>
+                                        <Button variant='warning ms-3' size='md' type='view'>
+                                                <FaEye />   
+                                        </Button>
+                                        </Card.Link>
+                                        <Card.Link as={ Link } to={`/edit-contact/${id}`}>
+                                        <Button variant='warning ms-3' size='md' type='view'>
+                                        <FaPencilAlt />   
+                                        </Button>
+                                    </Card.Link>
+                                    <Card.Link>
+                                       <Button
+                                                variant='danger ms-3'
+                                                size='md'
+                                                onClick={() => handleDelete(id)}
+                                            >
+                                                <FaRegTrashAlt />
+                                            </Button>
+                                            </Card.Link>
+                                            <Card.Link as={Link} to={`/contacts`}>
+                        <Button variant='warning ms-3' size='md' type='view'>
+                             Back
+                        </Button>
+                        </Card.Link>  
+                                </div>              
+                    }         
+                    
                     </Card.Body>
                     </div>
                 </Card>

@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Container } from 'react-bootstrap'
 import ContactForm from '../assets/contacts/ContactForm'
+import { ContactContext } from '../context/Contact.context'
 import Footer from '../layouts/Footer'
 import Header from '../layouts/Header'
 
-function AddContact({ addContact}) {
+function AddContact() {
+  const { addContact } = useContext(ContactContext);
   return (
       <>
         <Header/>

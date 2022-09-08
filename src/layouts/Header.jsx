@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Button, Container, Form, Nav, Navbar } from 'react-bootstrap';
 import { NavLink } from "react-router-dom";
+import { AuthContext } from '../context/Auth.Context';
 function Header({toggleTheme, theme}) {
+  const { logout, user } = useContext(AuthContext)
   return (
-   
-    
+
     <Navbar id={theme} >
     <Container>
       <Navbar.Brand href='/' className='brand'>
@@ -20,10 +21,22 @@ function Header({toggleTheme, theme}) {
          
           <NavLink to='/home' className="nav-link"> Home</NavLink>
           <NavLink to='/about' className="nav-link">About</NavLink>
-          <NavLink to='/contacts' className="nav-link">Contacts</NavLink>
-          <NavLink to='/addcontact' className="nav-link">Add Contacts</NavLink>
-          <NavLink to='/register' className="nav-link">Register</NavLink>
-          <NavLink to='/login' className="nav-link">Login </NavLink>
+          {
+              user ? (
+                <>
+                  <NavLink to='/dashboard' className="nav-link">Dashboard</NavLink>
+                  <NavLink to='/contacts' className="nav-link">Contacts</NavLink>
+                  <NavLink to='/addcontact' className="nav-link">Add Contacts</NavLink>
+                  <Button onClick={logout}> Logout </Button>
+              </>)
+              :
+              (
+              <>
+                <NavLink to='/register' className="nav-link">Register</NavLink>
+                <NavLink to='/login' className="nav-link">Login </NavLink>
+              </>
+              )
+          }
         </Nav>
         <Form className='d-flex'>
           <Form.Control
