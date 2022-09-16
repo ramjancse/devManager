@@ -11,10 +11,15 @@ import ContactDetails from '../pages/ContactDetails';
 import Contacts from '../pages/Contacts';
 import Dashboard from '../pages/Dashboard';
 import EditContact from '../pages/EditContact';
+import ForgotPassword from '../pages/ForgotPassword';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
+import ManagePassword from '../pages/ManagePassword';
 import NotFound from '../pages/NotFound';
+import Profile from '../pages/Profile';
 import Register from '../pages/Register';
+import RestetPassword from '../pages/RestetPassword';
+import UserContactList from '../pages/UserContactList';
 import PrivetRoute from './PrivetRoute';
 import PublicRoute from './PublicRoute';
 
@@ -26,6 +31,7 @@ function App() {
   
   const [theme, setTheme] = useState('dark');
   const context = useContext(ContactContext);
+  const [searchInput, setSearchInput] = useState('');
  
 
   const toggleTheme = () => {
@@ -88,7 +94,12 @@ function App() {
                   <Dashboard />
                 </PrivetRoute>
               }
-            />
+            >
+              <Route index element={<Profile />} />
+              <Route path='profile' element={<Profile />} />
+              <Route path='managae-password' element={<ManagePassword />} />
+              <Route path='contacts' element={<UserContactList />} />
+            </Route>
             <Route path='/register'
               element={
                 <PublicRoute>
@@ -96,10 +107,26 @@ function App() {
                 </PublicRoute> 
               }
             />
+              
+          
             <Route path='/login'
               element={
                 <PublicRoute>
                   <Login />
+                </PublicRoute>
+              }
+            />
+            <Route path='/forgot-password'
+              element={
+                <PublicRoute>
+                  <ForgotPassword/>
+                </PublicRoute>
+              }
+            />
+            <Route path='/reset-password'
+              element={
+                <PublicRoute>
+                 <RestetPassword />
                 </PublicRoute>
               }
             />

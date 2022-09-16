@@ -1,3 +1,4 @@
+import qs from 'qs';
 import { createContext, useContext, useEffect, useReducer, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -6,7 +7,6 @@ import { axiosPrivetInstance } from '../config/Axios';
 import { AuthContext } from './Auth.Context';
 import contactsReducer from './Refucer';
 import { ADD_CONTACT, DELETE_CONTACT, LOAD_CONTACTS, UPDATE_CONTACT } from './Types';
-
 export const ContactContext = createContext();
 
 
@@ -96,26 +96,47 @@ const initialContacts = [
 export const ContactProvider = ({ children }) => {
   const [contacts, dispatch] = useReducer(contactsReducer, initialContacts);
   const [loaded, setLoaded] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1)
+  const [pageCount, setPageCount] = useState(null)
+  const [trigger, setTrigger] = useState(false);
+  const [searchInput, setSearchInput] = useState(null);
   const navigate = useNavigate();
   const { user } = useContext(AuthContext); 
-
+  const { token } =useContext(AuthContext)
+  const handleSearch = (searchText) => {
+      console.log(searchText)
+  }
+  
   useEffect(() => {
-    ( async() => {
-      await loadContacts();
+    (async () => {
+      if (token) {
+        await loadContacts();
+      }
+      
     })();
-  }, []);
+  }, [token, pageNumber,trigger]);
   
   const loadContacts = async () => {
+    const query = qs.stringify({
+      sort: ['id:desc'],
+      populate: '*',
+      pagination: {
+        page: pageNumber,
+        pageSize : import.meta.env.VITE_PAGE_SIZE,
+      }
+    });
     try {
-      const response = await axiosPrivetInstance.get('/contacts?populate=*');
-      
+      const response = await axiosPrivetInstance(token).get(`/contacts?${query}`);
       const loadedContacts = response.data.data.map(contact =>formatContact(contact))
       dispatch({
         type: LOAD_CONTACTS,
         payload : loadedContacts,
       });
+      setPageCount(response.data.meta.pagination.pageCount)
       setLoaded(true)
-      }
+      console.log('pagination->>>>',response.data);
+    }
+   
     catch (err) {
       toast.error(err.response?.data?.error?.message);
     }
@@ -124,8 +145,9 @@ export const ContactProvider = ({ children }) => {
     
   const deleteContact = async (id) => {
     try {
-      const response = await axiosPrivetInstance.delete(`/contacts/${id}`)
-      dispatch({ type: DELETE_CONTACT, payload: response.data.data.id, });  
+      const response = await axiosPrivetInstance(token).delete(`/contacts/${id}`)
+      dispatch({ type: DELETE_CONTACT, payload: response.data.data.id, }); 
+      setTrigger(!trigger)
       toast.success('Data is deletred successfully');
     } catch(err) {
       toast.error(err.response?.data?.error?.message);
@@ -135,7 +157,7 @@ export const ContactProvider = ({ children }) => {
     
   const updateContact = async (contactToUpdate, id) => {
     try {
-      const response = await axiosPrivetInstance.put(`/contacts/${id}?populate=*`, {
+      const response = await axiosPrivetInstance(token).put(`/contacts/${id}?populate=*`, {
         data: contactToUpdate,
       })
       const contact = formatContact(response.data.data);
@@ -155,7 +177,7 @@ export const ContactProvider = ({ children }) => {
 
   const addContact = async (contactData) => {
     try {
-      const response = await axiosPrivetInstance.post('/contacts', {
+      const response = await axiosPrivetInstance(token).post('/contacts', {
         data: contactData,
       })
       const contact = formatContact(response.data.data)
@@ -163,6 +185,7 @@ export const ContactProvider = ({ children }) => {
         type: ADD_CONTACT,
         payload : contact,
       })
+      setTrigger(!trigger)
       toast.success('Contact Added ......');
       navigate('/contacts')
     } catch (err) {
@@ -176,7 +199,11 @@ export const ContactProvider = ({ children }) => {
         contacts,
         deleteContact,
         addContact,
-        updateContact
+        updateContact,
+        pageCount,
+        pageNumber,
+        setPageNumber,
+        handleSearch
     }
     return <ContactContext.Provider value={value}>
             { children}

@@ -54,6 +54,9 @@
 #dark .nav-link {
   color: #fff;
 }
+.customImage {
+  width: 100px;
+}
 .marginSwitch {
   margin-top: 5px;
   margin-bottom: 5px;
